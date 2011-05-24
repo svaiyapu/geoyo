@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>geo-yo!</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="geoyo.css"/> 
+        <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+        <% if @body %>
+            <script type="text/javascript"
+                src="http://maps.google.com/maps/api/js?sensor=false">
+            </script>
+            <script type="text/javascript">
+                function loadMap() {    
+                    var LOC = new google.maps.LatLng(<%= @body['results'][0]['geometry']['location']['lat'] %> , <%= @body['results'][0]['geometry']['location']['lng'] %>);
+                    var mapOptions = {
+                        zoom: 8,
+                        center: LOC,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
+                    var map = new google.maps.Map(document.getElementById("map"),
+                                    mapOptions);
+
+                }
+            </script>
+        <% end %>
+    </head>
+    <body <%= @body ? "onload=\"loadMap()\"" : "" %>>
+        <div id="content">
+        <div id="header">
+            <h1>geo yo!</h1>
+        </div>
+        <div id="address-form">
+            <form action="/" method="post">
+                <input id="address-input" type="text" name="address" placeholder="Enter address" <%= @address ? "value=\"#{@address}\"" : "" %> required />
+                <input type="submit" name="submit" value="code!"/>
+            </form>
+        </div>
+        <% if @body %>
+        <div id="map">
+        </div>
+        <div id="lat-long">
+            <pre>
+<strong>Latitude</strong>   : <%= @body['results'][0]['geometry']['location']['lat'] %> 
+<strong>Longtitude</strong> : <%= @body['results'][0]['geometry']['location']['lng'] %>
+            </pre>
+        </div>
+        <div id="full-address">
+            <pre>
+<strong>Full address</strong> :
+    <%= @body['results'][0]['formatted_address'] %>
+            </pre>
+        </div>
+        <div id="full-result">
+            <pre>
+<strong>Geocoding results</strong> :
+<%= JSON.pretty_generate(@body)%>
+            </pre>
+        </div>
+        <% end %>
+        </div>
+    </body>
+</html>
