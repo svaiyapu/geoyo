@@ -6,3 +6,4 @@ body { margin: 0px auto; padding: 0px; background: maroon; }
 #lat-long, #full-address, #full-result { width: 50%; border: thin black solid; margin-top: 0.5em; padding: 0.5em; }
 #map { width: 400px; height: 400px; float: right; margin-top: 0.5em; margin-right:1.0em; }
 pre { margin-top: 0.5em; margin-bottom: 0.5em }
+#error { font-style: italic; color: red }

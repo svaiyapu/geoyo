@@ -19,7 +19,12 @@
                         };
                     var map = new google.maps.Map(document.getElementById("map"),
                                     mapOptions);
-
+                    // add a marker 
+                    var marker = new google.maps.Marker({
+                        position: LOC,
+                        map: map,
+                        title: "<%= @body['results'][0]['formatted_address'] %>"
+                    });
                 }
             </script>
         <% end %>
@@ -35,6 +40,11 @@
                 <input type="submit" name="submit" value="code!"/>
             </form>
         </div>
+        <% if @error %>
+        <div id="error">
+            <%= @error %>
+        </div>
+        <% end %>
         <% if @body %>
         <div id="map">
         </div>

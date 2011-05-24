@@ -23,5 +23,13 @@ end
 post '/' do
     @address = params[:address]
     @body, @error = geocode(@address)
+    if @body['status'] != 'OK' then
+        @error = "Geo-coding failed.  Please verify address"
+    end
+    if @error then
+        @body = nil
+    end
+    puts @body
+    puts @error
     erb :index
 end
