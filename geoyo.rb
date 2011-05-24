@@ -29,7 +29,5 @@ post '/' do
     if @error then
         @body = nil
     end
-    puts @body
-    puts @error
     erb :index
 end
