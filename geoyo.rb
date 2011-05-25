@@ -9,7 +9,6 @@ require 'redis'
 configure do
     @@redis = nil
     services = ENV['VCAP_SERVICES']
-    puts services
     if services then
         services = JSON.parse(services)
         redis_key = services.keys.select { |svc| svc =~ /redis/i }.first
@@ -27,7 +26,7 @@ helpers do
         if @@redis then
             value = @@redis.get(key)
             if value then
-                return value, nil
+                return JSON.parse(value), nil
             end
         end
         resp = Net::HTTP.get_response(URI.parse("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=#{URI.escape(address)}"))
@@ -35,7 +34,7 @@ helpers do
                     when Net::HTTPSuccess then nil
                     else "Geo-coding failed.  Please verify address"
                 end
-        @@redis.put(key, resp.body) if @@redis
+        @@redis.set(key, resp.body) if @@redis
         return JSON.parse(resp.body), error
     end
 end
