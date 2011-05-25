@@ -11,7 +11,7 @@
             </script>
             <script type="text/javascript">
                 function loadMap() {    
-                    var LOC = new google.maps.LatLng(<%= @body['results'][0]['geometry']['location']['lat'] %> , <%= @body['results'][0]['geometry']['location']['lng'] %>);
+                    var LOC = new google.maps.LatLng(<%= @lat %> , <%= @lng %>);
                     var mapOptions = {
                         zoom: 8,
                         center: LOC,
@@ -23,7 +23,7 @@
                     var marker = new google.maps.Marker({
                         position: LOC,
                         map: map,
-                        title: "<%= @body['results'][0]['formatted_address'] %>"
+                        title: "<%= @full_address %>"
                     });
                 }
             </script>
@@ -31,45 +31,48 @@
     </head>
     <body <%= @body ? "onload=\"loadMap()\"" : "" %>>
         <div id="content">
-        <div id="header">
-            <h1>geo yo!</h1>
-        </div>
-        <div id="address-form">
-            <form action="/" method="post">
-                <input id="address-input" type="text" name="address" placeholder="Enter address" <%= @address ? "value=\"#{@address}\"" : "" %> required />
-                <input type="submit" name="submit" value="code!"/>
-            </form>
-        </div>
-        <% if @error %>
-        <div id="error">
-            <%= @error %>
-        </div>
-        <% end %>
-        <% if @body %>
-        <div id="map">
-        </div>
-        <div id="lat-long">
-            <pre>
-<strong>Latitude</strong>   : <%= @body['results'][0]['geometry']['location']['lat'] %> 
-<strong>Longtitude</strong> : <%= @body['results'][0]['geometry']['location']['lng'] %>
-            </pre>
-        </div>
-        <div id="full-address">
-            <pre>
+            <div id="header">
+                <h1>geo yo!</h1>
+            </div>
+            <div id="address-form">
+                <form action="/" method="post">
+                    <input id="address-input" type="text" name="address" placeholder="Enter address" <%= @address ? "value=\"#{@address}\"" : "" %> required />
+                    <input type="submit" name="submit" value="code!"/>
+                </form>
+            </div>
+            <% if @error %>
+                <div id="error">
+                    <%= @error %>
+                </div>
+            <% end %>
+            <% if @body %>
+                <div id="map">
+                </div>
+                <div id="lat-long">
+                    <pre>
+<strong>Latitude</strong>   : <%= @lat %> 
+<strong>Longtitude</strong> : <%= @lng %>
+                    </pre>
+                </div>
+                <div id="full-address">
+                    <pre>
 <strong>Full address</strong> :
-    <%= @body['results'][0]['formatted_address'] %>
-            </pre>
-        </div>
-        <div id="full-result">
-            <pre>
+    <%= @full_address %>
+                    </pre>
+                </div>
+                <div id="full-result">
+                    <pre>
 <strong>Geocoding results</strong> :
 <%= JSON.pretty_generate(@body)%>
-            </pre>
-        </div>
-        <% end %>
-        <div id="footer">
-            Code: <a target="_blank" href="https://github.com/svaiyapu/geoyo">https://github.com/svaiyapu/geoyo</a>
-        </div>
+                    </pre>
+                </div>
+            <% else %>
+                <div id="spacer">
+                </div>
+            <% end %>
+            <div id="footer">
+                Code: <a target="_blank" href="https://github.com/svaiyapu/geoyo">https://github.com/svaiyapu/geoyo</a>
+            </div>
         </div>
     </body>
 </html>

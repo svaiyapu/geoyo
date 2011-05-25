@@ -29,5 +29,10 @@ post '/' do
     if @error then
         @body = nil
     end
+    if @body != nil then
+        @lat = @body['results'][0]['geometry']['location']['lat']
+        @lng = @body['results'][0]['geometry']['location']['lng']
+        @full_address = @body['results'][0]['formatted_address']
+    end
     erb :index
 end
