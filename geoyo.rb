@@ -4,14 +4,38 @@ require 'sinatra'
 require 'net/http'
 require 'uri'
 require 'json'
+require 'redis'
+
+configure do
+    @@redis = nil
+    services = ENV['VCAP_SERVICES']
+    puts services
+    if services then
+        services = JSON.parse(services)
+        redis_key = services.keys.select { |svc| svc =~ /redis/i }.first
+        if redis_key then
+            redis = services[redis_key].first['credentials']
+            redis_conf = {:host => redis['hostname'], :port => redis['port'], :password => redis['password']}
+            @@redis = Redis.new redis_conf
+        end
+    end
+end
 
 helpers do
     def geocode(address)
+        key = address.downcase.gsub(/\s+/,' ')
+        if @@redis then
+            value = @@redis.get(key)
+            if value then
+                return value, nil
+            end
+        end
         resp = Net::HTTP.get_response(URI.parse("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=#{URI.escape(address)}"))
         error = case resp
                     when Net::HTTPSuccess then nil
                     else "Geo-coding failed.  Please verify address"
                 end
+        @@redis.put(key, resp.body) if @@redis
         return JSON.parse(resp.body), error
     end
 end
