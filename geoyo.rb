@@ -34,7 +34,7 @@ helpers do
                     when Net::HTTPSuccess then nil
                     else "Geo-coding failed.  Please verify address"
                 end
-        @@redis.set(key, resp.body) if @@redis
+        @@redis.set(key, resp.body) if @@redis && !error
         return JSON.parse(resp.body), error
     end
 end
